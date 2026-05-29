@@ -71,17 +71,16 @@ export default function BestThirdsPage() {
   const atLimit = count >= TARGET;
 
   const onToggle = (teamId: string) => {
-    setSelected((curr) => {
-      if (curr.includes(teamId)) {
-        const next = curr.filter((id) => id !== teamId);
-        setBestThirds(next);
-        return next;
-      }
-      if (curr.length >= TARGET) return curr;
-      const next = [...curr, teamId];
-      setBestThirds(next);
-      return next;
-    });
+    const isPicked = selected.includes(teamId);
+    let next: string[];
+    if (isPicked) {
+      next = selected.filter((id) => id !== teamId);
+    } else {
+      if (selected.length >= TARGET) return;
+      next = [...selected, teamId];
+    }
+    setSelected(next);
+    setBestThirds(next);
   };
 
   // Avoid SSR/CSR mismatch — render a stable skeleton until store is hydrated.
