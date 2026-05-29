@@ -37,10 +37,8 @@ export default async function GroupsPredictionPage() {
           Shared tap-to-swap selection lives in GroupsGrid. */}
       <GroupsGrid />
 
-      {/* Continue CTA */}
-      <div className="mt-8">
-        <ContinueCta />
-      </div>
+      {/* Bottom step nav — owns its own top margin */}
+      <ContinueCta />
     </section>
   );
 }

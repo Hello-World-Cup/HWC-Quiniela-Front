@@ -14,6 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { StepFooterNav } from "@/components/layout/step-footer-nav";
 import { TileBand } from "@/components/layout/tile-band";
 import { cn } from "@/lib/utils";
 
@@ -59,31 +60,16 @@ export function ContinueCta() {
   }
 
   return (
-    <div className="border border-rule bg-paper">
-      <div className="flex flex-col items-stretch gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-col">
-          <span className="font-display text-[10px] font-medium uppercase tracking-[0.22em] text-ink-faint">
-            Paso 1 de 3
-          </span>
-          <span className="font-display text-sm font-bold uppercase tracking-[0.10em] text-ink">
-            {ready
-              ? "Todos los grupos ordenados"
-              : `${done} de ${total} grupos ordenados`}
-          </span>
-        </div>
-
-        <button
-          type="button"
-          onClick={handleContinue}
-          className={cn(
-            "border-2 border-ink bg-ink px-5 py-2.5 text-center",
-            "font-display text-xs font-bold uppercase tracking-[0.18em] text-chalk",
-            "transition-colors hover:bg-card-red hover:border-card-red",
-          )}
-        >
-          Continuar a Mejores Terceros →
-        </button>
-      </div>
+    <>
+      <StepFooterNav
+        caption="Paso 1 de 3"
+        currentLabel={
+          ready
+            ? "Todos los grupos ordenados"
+            : `${done} de ${total} grupos ordenados`
+        }
+        next={{ label: "Continuar a Mejores Terceros", onClick: handleContinue }}
+      />
 
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent className="rounded-sm border-2 border-ink p-0 sm:max-w-md ring-0">
@@ -134,6 +120,6 @@ export function ContinueCta() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </>
   );
 }
