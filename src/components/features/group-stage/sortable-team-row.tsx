@@ -183,6 +183,17 @@ export function SortableTeamRow({
       >
         <GripDots />
       </span>
+
+      {/* Selection blocker — transparent overlay covers the row so pointer
+          events can't land on the text or flag image. Pointer events still
+          bubble to the <li>, which owns the drag and tap handlers. */}
+      <span
+        aria-hidden
+        className={cn(
+          "absolute inset-0 select-none",
+          isDragging ? "cursor-grabbing" : "cursor-grab",
+        )}
+      />
     </li>
   );
 }
