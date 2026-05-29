@@ -6,6 +6,7 @@ import { groupIds, teamById } from "@/data/tournament";
 import { usePredictionsStore } from "@/lib/store/predictions";
 import { PickRow } from "@/components/features/best-thirds/pick-row";
 import { TiebreakerNote } from "@/components/features/best-thirds/tiebreaker-note";
+import { StepFooterNav } from "@/components/layout/step-footer-nav";
 import { cn } from "@/lib/utils";
 import type { GroupId } from "@/types/domain";
 
@@ -131,7 +132,20 @@ export default function BestThirdsPage() {
         <TiebreakerNote />
       </div>
 
-      <CtaFooter ready={count === TARGET} count={count} />
+      <StepFooterNav
+        caption="Paso 2 de 3"
+        currentLabel={
+          count === TARGET
+            ? "Ocho confirmados"
+            : `${TARGET - count} más por seleccionar`
+        }
+        back={{ label: "Grupos", href: "/predictions/groups" }}
+        next={{
+          label: "Continuar a Eliminatorias",
+          href: "/predictions/knockout",
+          disabled: count !== TARGET,
+        }}
+      />
     </PageShell>
   );
 }
@@ -245,34 +259,3 @@ function EmptyState({ completedGroups }: { completedGroups: number }) {
   );
 }
 
-function CtaFooter({ ready, count }: { ready: boolean; count: number }) {
-  return (
-    <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-rule pt-6">
-      <p className="font-display text-[11px] font-medium uppercase tracking-[0.18em] text-ink-faint">
-        {ready ? (
-          <>Ocho confirmados · Continúa cuando quieras</>
-        ) : (
-          <>
-            <span className="text-ink">{TARGET - count}</span> más por seleccionar
-          </>
-        )}
-      </p>
-
-      {ready ? (
-        <Link
-          href="/predictions/knockout"
-          className="border border-ink bg-ink px-5 py-2.5 font-display text-sm font-semibold uppercase tracking-[0.16em] text-chalk hover:bg-card-red hover:border-card-red"
-        >
-          Continuar a Eliminatorias
-        </Link>
-      ) : (
-        <span
-          aria-disabled="true"
-          className="cursor-not-allowed border border-rule bg-paper px-5 py-2.5 font-display text-sm font-semibold uppercase tracking-[0.16em] text-ink-faint"
-        >
-          Continuar a Eliminatorias
-        </span>
-      )}
-    </div>
-  );
-}
