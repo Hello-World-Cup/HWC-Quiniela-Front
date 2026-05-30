@@ -12,6 +12,7 @@ interface ApiFetchOptions extends Omit<RequestInit, "body"> {
   query?: Record<string, string | number | boolean | undefined>;
   tags?: string[];
   revalidate?: number | false;
+  token?: string;
 }
 
 function buildUrl(path: string, query?: ApiFetchOptions["query"]): string {
@@ -25,13 +26,14 @@ function buildUrl(path: string, query?: ApiFetchOptions["query"]): string {
 }
 
 export async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): Promise<T> {
-  const { body, query, tags, revalidate, headers, ...rest } = options;
+  const { body, query, tags, revalidate, headers, token, ...rest } = options;
 
   const response = await fetch(buildUrl(path, query), {
     ...rest,
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...headers,
     },
     body: body === undefined ? undefined : JSON.stringify(body),

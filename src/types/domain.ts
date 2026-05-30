@@ -31,11 +31,14 @@ export interface Match {
   stage: MatchStage;
   group: GroupId | null;
   kickoff: string;
-  venue: string;
+  venue: string | null;
   status: MatchStatus;
-  homeTeam: Team;
-  awayTeam: Team;
+  homeTeam: Team | null;
+  awayTeam: Team | null;
   score: Score | null;
+  matchLabel?: string | null;
+  fifaNumber?: number | null;
+  predictionDeadline?: string | null;
 }
 
 export interface Prediction {

@@ -22,14 +22,15 @@ export const teamsApi = {
 };
 
 export const predictionsApi = {
-  listForUser: (userId: string) =>
+  listForUser: (userId: string, token?: string) =>
     apiFetch<Prediction[]>(`/users/${userId}/predictions`, {
       tags: [cacheTags.predictions, `predictions:${userId}`],
       revalidate: 30,
+      token,
     }),
 
-  submit: (input: { matchId: string; home: number; away: number }) =>
-    apiFetch<Prediction>("/predictions", { method: "POST", body: input }),
+  submit: (input: { matchId: string; home: number; away: number }, token: string) =>
+    apiFetch<Prediction>("/predictions", { method: "POST", body: input, token }),
 };
 
 export const leaderboardApi = {

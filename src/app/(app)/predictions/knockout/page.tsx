@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { toast } from "sonner";
 import { usePredictionsStore } from "@/lib/store/predictions";
 import { groupIds } from "@/data/tournament";
 import {
@@ -21,6 +20,7 @@ import { StageNav } from "@/components/features/knockout/stage-nav";
 import { StageFooterNav } from "@/components/features/knockout/stage-footer-nav";
 import { EmptyState } from "@/components/features/knockout/empty-state";
 import { BracketProgress } from "@/components/features/knockout/bracket-progress";
+import { SaveQuinielaButton } from "@/components/features/knockout/save-quiniela-button";
 
 export default function KnockoutPredictionPage() {
   const groupOrder = usePredictionsStore((s) => s.groupOrder);
@@ -122,6 +122,13 @@ export default function KnockoutPredictionPage() {
           {/* Active stage detail */}
           <StageDetail stage={activeStage} resolved={resolved} />
 
+          {/* Save button — only visible on Final stage */}
+          {activeStage === "FINAL" && (
+            <div className="mt-6 flex justify-center">
+              <SaveQuinielaButton knockoutPicks={knockoutPicks} />
+            </div>
+          )}
+
           {/* Bottom stage navigation — prev/next, Go back hidden on R32 */}
           <StageFooterNav active={activeStage} onSelect={setActiveStage} />
         </>
@@ -171,21 +178,6 @@ function StageDetail({
               variant={stage === "FINAL" ? "final" : "default"}
             />
           ))}
-          {stage === "FINAL" && (
-            <div className="mt-6 flex justify-center">
-              <button
-                type="button"
-                onClick={() =>
-                  toast.success("¡Quiniela guardada!", {
-                    description: "Tus pronósticos están a salvo.",
-                  })
-                }
-                className="border-2 border-ink bg-gold px-10 py-4 font-display text-base font-bold uppercase tracking-[0.18em] text-ink transition-all hover:brightness-95 active:brightness-90"
-              >
-                Guardar Quiniela
-              </button>
-            </div>
-          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
