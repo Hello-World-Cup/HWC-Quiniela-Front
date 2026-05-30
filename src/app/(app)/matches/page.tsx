@@ -64,11 +64,18 @@ function MatchCard({ match }: { match: Match }) {
         </span>
       </CardHeader>
       <CardContent className="flex items-center justify-between">
-        <TeamRow name={match.homeTeam.name} code={match.homeTeam.code} />
+        <TeamRow
+          name={match.homeTeam?.name ?? match.matchLabel ?? "TBD"}
+          code={match.homeTeam?.code ?? "?"}
+        />
         <div className="px-3 text-xl font-bold tabular-nums">
           {match.score ? `${match.score.home} – ${match.score.away}` : "vs"}
         </div>
-        <TeamRow name={match.awayTeam.name} code={match.awayTeam.code} reverse />
+        <TeamRow
+          name={match.awayTeam?.name ?? "TBD"}
+          code={match.awayTeam?.code ?? "?"}
+          reverse
+        />
       </CardContent>
     </Card>
   );
