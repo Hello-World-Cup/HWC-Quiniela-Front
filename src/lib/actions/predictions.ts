@@ -3,7 +3,10 @@
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 
-const API_URL = (process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
+// Read at call time so env changes take effect without restarting the module.
+function getApiUrl() {
+  return (process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
+}
 
 interface PickInput {
   bracketId: string;
@@ -19,31 +22,39 @@ export interface SubmitResult {
 }
 
 async function fetchMatchIdMap(): Promise<Map<number, string>> {
+  const apiUrl = getApiUrl();
+  console.log("[predictions] fetchMatchIdMap — API_URL:", apiUrl);
   const stages = ["round-of-32", "round-of-16", "quarter-final", "semi-final", "third-place", "final"];
   const map = new Map<number, string>();
 
   await Promise.all(
     stages.map(async (stage) => {
       try {
-        const res = await fetch(`${API_URL}/matches?stage=${stage}`, {
-          next: { revalidate: 3600, tags: ["matches"] },
+        const res = await fetch(`${apiUrl}/matches?stage=${stage}`, {
+          cache: "no-store",
         });
-        if (!res.ok) return;
+        if (!res.ok) {
+          console.error(`[predictions] /matches?stage=${stage} → HTTP ${res.status}`);
+          return;
+        }
         const matches = (await res.json()) as Array<{ id: string; fifaNumber: number | null }>;
+        console.log(`[predictions] stage=${stage} → ${matches.length} matches`);
         for (const m of matches) {
           if (m.fifaNumber != null) map.set(m.fifaNumber, m.id);
         }
-      } catch {
-        // silently skip failed stages — partial maps are handled below
+      } catch (err) {
+        console.error(`[predictions] fetch /matches?stage=${stage} threw:`, err);
       }
     })
   );
 
+  console.log("[predictions] matchIdMap size:", map.size);
   return map;
 }
 
 export async function submitKnockoutPredictions(picks: PickInput[]): Promise<SubmitResult> {
   const session = await auth();
+  console.log("[predictions] backendToken:", session?.user?.backendToken ? "present" : "MISSING");
   if (!session?.user?.backendToken) {
     return { ok: false, submitted: 0, errors: [{ bracketId: "*", message: "Sesión expirada, vuelve a iniciar sesión" }] };
   }
@@ -56,7 +67,7 @@ export async function submitKnockoutPredictions(picks: PickInput[]): Promise<Sub
       const matchId = matchIdMap.get(pick.fifaNumber);
       if (!matchId) throw new Error(`Partido no encontrado (FIFA #${pick.fifaNumber})`);
 
-      const res = await fetch(`${API_URL}/predictions`, {
+      const res = await fetch(`${getApiUrl()}/predictions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

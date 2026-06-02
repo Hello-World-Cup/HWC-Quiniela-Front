@@ -10,10 +10,18 @@ async function exchangeGoogleToken(idToken: string): Promise<string | null> {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token: idToken }),
     });
-    if (!res.ok) return null;
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      console.error(`[auth] exchangeGoogleToken failed: HTTP ${res.status}`, body);
+      return null;
+    }
     const data = (await res.json()) as { access_token: string };
-    return data.access_token ?? null;
-  } catch {
+    const token = data.access_token ?? null;
+    if (!token) console.error("[auth] exchangeGoogleToken: access_token missing in response", data);
+    else console.log("[auth] exchangeGoogleToken: OK — backendToken acquired");
+    return token;
+  } catch (err) {
+    console.error("[auth] exchangeGoogleToken: network/parse error", err);
     return null;
   }
 }
@@ -35,7 +43,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) token.id = user.id;
       if (account?.id_token) {
         const backendToken = await exchangeGoogleToken(account.id_token);
-        if (backendToken) token.backendToken = backendToken;
+        if (backendToken) {
+          token.backendToken = backendToken;
+          console.log("[auth] jwt: backendToken stored in JWT ✓");
+        } else {
+          console.error("[auth] jwt: backendToken is null — session will be broken");
+        }
       }
       return token;
     },
