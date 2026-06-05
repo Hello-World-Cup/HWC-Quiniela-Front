@@ -48,6 +48,7 @@ export interface Prediction {
   predictedScore: Score;
   pointsAwarded: number | null;
   submittedAt: string;
+  match?: Match;
 }
 
 export interface LeaderboardEntry {

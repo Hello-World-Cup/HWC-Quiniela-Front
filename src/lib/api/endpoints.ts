@@ -29,6 +29,13 @@ export const predictionsApi = {
       token,
     }),
 
+  me: (token: string) =>
+    apiFetch<Prediction[]>("/predictions/me", {
+      tags: [cacheTags.predictions],
+      revalidate: 30,
+      token,
+    }),
+
   submit: (input: { matchId: string; home: number; away: number }, token: string) =>
     apiFetch<Prediction>("/predictions", { method: "POST", body: input, token }),
 };

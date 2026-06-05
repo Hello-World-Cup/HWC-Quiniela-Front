@@ -8,6 +8,7 @@ const navItems = [
   { href: "/predictions/groups", label: "Grupos" },
   { href: "/predictions/best-thirds", label: "Mejores Terceros" },
   { href: "/predictions/knockout", label: "Eliminatorias" },
+  { href: "/predictions/results", label: "Mis Resultados" },
   { href: "/leaderboard", label: "Tabla" },
 ];
 
