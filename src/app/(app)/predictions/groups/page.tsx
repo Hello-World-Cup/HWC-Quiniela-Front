@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { ContinueCta } from "@/components/features/group-stage/continue-cta";
 import { GroupsGrid } from "@/components/features/group-stage/groups-grid";
 import { ProgressIndicator } from "@/components/features/group-stage/progress-indicator";
+import { PrizeCallout } from "@/components/features/prizes/prize-callout";
 
 export default async function GroupsPredictionPage() {
   const session = await auth();
@@ -27,6 +28,9 @@ export default async function GroupsPredictionPage() {
           </p>
         )}
       </header>
+
+      {/* Phase prize callout */}
+      <PrizeCallout phase="GROUPS" className="mb-4" />
 
       {/* Progress card */}
       <div className="mb-6">

@@ -21,6 +21,7 @@ import { StageFooterNav } from "@/components/features/knockout/stage-footer-nav"
 import { EmptyState } from "@/components/features/knockout/empty-state";
 import { BracketProgress } from "@/components/features/knockout/bracket-progress";
 import { SaveQuinielaButton } from "@/components/features/knockout/save-quiniela-button";
+import { PrizeCallout } from "@/components/features/prizes/prize-callout";
 
 export default function KnockoutPredictionPage() {
   const groupOrder = usePredictionsStore((s) => s.groupOrder);
@@ -168,6 +169,8 @@ function StageDetail({
           {meta?.subtitle}
         </span>
       </div>
+
+      <PrizeCallout phase={stage} className="mb-4" />
 
       {isSingleMatch ? (
         <div className={stage === "FINAL" ? "mx-auto max-w-3xl" : "max-w-2xl"}>
